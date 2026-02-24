@@ -46,6 +46,12 @@ Page({
   onTabItemTap(item) {
     console.log('index 页面生命周期执行：11 onTabItemTap', item)
   },
+  // 跳转到 detail 页面，携带参数 name=慕课
+  goDetail() {
+    wx.navigateTo({
+      url: '/pages/detail/index?name=慕课',
+    })
+  },
   bindViewTap() {
     wx.navigateTo({
       url: '../logs/logs'

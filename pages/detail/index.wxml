@@ -1,0 +1,47 @@
+<!--pages/detail/index.wxml-->
+<view style="padding: 40rpx;">
+  <text>当前 name 参数为：{{name}}</text>
+  <view>{{message}}</view>
+  <view>讲师：{{userInfo.name}} - {{userInfo.title}}</view>
+  <view wx:for="{{courseList}}">{{item}}</view>
+
+  <!-- 1. 点击事件示例 -->
+  <view style="margin-top: 40rpx;">
+    <text>1. 点击事件示例</text>
+    <button type="primary" bindtap="handleTap" style="margin-left: 20rpx;">点我试试</button>
+    <view style="margin-top: 10rpx;">点击次数：{{clickCount}}</view>
+  </view>
+
+  <!-- 2. 输入事件示例 -->
+  <view style="margin-top: 40rpx;">
+    <text>2. 输入事件示例</text>
+    <input
+      style="margin-top: 10rpx; border: 1px solid #ddd; padding: 10rpx;"
+      placeholder="请输入内容"
+      bindinput="handleInput"
+      value="{{inputValue}}"
+    />
+    <view style="margin-top: 10rpx;">当前输入：{{inputValue}}</view>
+  </view>
+
+  <!-- 3. 表单提交事件示例 -->
+  <view style="margin-top: 40rpx;">
+    <text>3. 表单提交事件示例</text>
+    <form bindsubmit="handleFormSubmit">
+      <view style="margin-top: 10rpx;">
+        <input
+          name="userName"
+          placeholder="请输入姓名"
+          style="border: 1px solid #ddd; padding: 10rpx; margin-bottom: 10rpx;"
+        />
+        <input
+          name="email"
+          placeholder="请输入邮箱"
+          style="border: 1px solid #ddd; padding: 10rpx; margin-bottom: 10rpx;"
+        />
+      </view>
+      <button type="primary" formType="submit">提交表单</button>
+    </form>
+    <view style="margin-top: 10rpx;">表单结果：{{formResult}}</view>
+  </view>
+</view>

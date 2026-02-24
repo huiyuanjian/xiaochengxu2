@@ -23,5 +23,8 @@
     <view class="usermotto">
       <text class="user-motto">{{motto}}</text>
     </view>
+    <view style="margin-top: 20rpx;">
+      <button bindtap="goDetail">跳转到 Detail（携带 name=慕课）</button>
+    </view>
   </view>
 </scroll-view>
