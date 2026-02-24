@@ -12,6 +12,40 @@ Page({
     canIUseGetUserProfile: wx.canIUse('getUserProfile'),
     canIUseNicknameComp: wx.canIUse('input.type.nickname'),
   },
+  onLoad(options) {
+    console.log('index 页面生命周期执行：1 onLoad', options)
+  },
+  onShow() {
+    console.log('index 页面生命周期执行：2 onShow')
+  },
+  onReady() {
+    console.log('index 页面生命周期执行：3 onReady')
+  },
+  onHide() {
+    console.log('index 页面生命周期执行：4 onHide')
+  },
+  onUnload() {
+    console.log('index 页面生命周期执行：5 onUnload')
+  },
+  onPullDownRefresh() {
+    console.log('index 页面生命周期执行：6 onPullDownRefresh')
+  },
+  onReachBottom() {
+    console.log('index 页面生命周期执行：7 onReachBottom')
+  },
+  onShareAppMessage() {
+    console.log('index 页面生命周期执行：8 onShareAppMessage')
+    return {}
+  },
+  onPageScroll(e) {
+    console.log('index 页面生命周期执行：9 onPageScroll', e)
+  },
+  onResize(e) {
+    console.log('index 页面生命周期执行：10 onResize', e)
+  },
+  onTabItemTap(item) {
+    console.log('index 页面生命周期执行：11 onTabItemTap', item)
+  },
   bindViewTap() {
     wx.navigateTo({
       url: '../logs/logs'
