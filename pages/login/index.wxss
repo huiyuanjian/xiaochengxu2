@@ -1,0 +1,134 @@
+.login-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #ffffff;
+}
+
+.content {
+  flex: 1;
+  padding: 24px 36px 24px;
+  box-sizing: border-box;
+}
+
+.logo-wrapper {
+  align-items: center;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.logo-text-main {
+  font-size: 32px;
+  color: #ff2442;
+  font-weight: 700;
+}
+
+.logo-text-sub {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #999999;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  border-radius: 24px;
+  background-color: #f7f7f7;
+  padding: 0 16px;
+  height: 48px;
+  margin-bottom: 16px;
+}
+
+.input-label {
+  margin-right: 8px;
+}
+
+.country-code {
+  font-size: 16px;
+  color: #333333;
+}
+
+.input-field {
+  flex: 1;
+  height: 100%;
+  font-size: 16px;
+  color: #333333;
+}
+
+.input-field::placeholder {
+  color: #cccccc;
+}
+
+.code-group {
+  margin-top: 8px;
+}
+
+.code-btn {
+  margin-left: 12px;
+  min-width: 92px;
+  height: 30px;
+  line-height: 30px;
+  border-radius: 15px;
+  font-size: 12px;
+  background-color: #ff5777;
+  color: #ffffff;
+}
+
+.code-btn[disabled] {
+  background-color: #f2f2f2;
+  color: #bbbbbb;
+}
+
+.login-btn {
+  margin-top: 32px;
+  height: 48px;
+  line-height: 48px;
+  border-radius: 24px;
+  font-size: 16px;
+  background-color: #ff5777;
+  color: #ffffff;
+}
+
+.login-btn[disabled] {
+  background-color: #ffd4de;
+  color: #ffffff;
+}
+
+.protocol-row {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.protocol-checkbox {
+  width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #cccccc;
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkbox-inner {
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+}
+
+.checkbox-inner.checked {
+  background-color: #ff5777;
+}
+
+.protocol-text {
+  flex: 1;
+  font-size: 11px;
+  color: #999999;
+  line-height: 18px;
+}
+

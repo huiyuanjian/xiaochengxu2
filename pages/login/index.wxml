@@ -1,0 +1,67 @@
+<view class="login-page">
+  <!-- 内容区域 -->
+  <view class="content">
+    <!-- 品牌 Logo -->
+    <view class="logo-wrapper">
+      <text class="logo-text-main">小红书</text>
+      <text class="logo-text-sub">你的生活指南</text>
+    </view>
+
+    <!-- 手机号输入 -->
+    <view class="input-group">
+      <view class="input-label">
+        <text class="country-code">{{countryCode}}</text>
+      </view>
+      <input
+        class="input-field"
+        type="number"
+        placeholder="输入手机号"
+        maxlength="11"
+        bindinput="onPhoneInput"
+      />
+    </view>
+
+    <!-- 验证码输入 -->
+    <view class="input-group code-group">
+      <input
+        class="input-field"
+        type="number"
+        placeholder="输入验证码"
+        maxlength="6"
+        bindinput="onCodeInput"
+      />
+      <button
+        class="code-btn"
+        size="mini"
+        bindtap="onGetCodeTap"
+        disabled="{{sendingCode || countdown > 0}}"
+      >
+        {{ countdown > 0 ? countdown + 's 后重试' : '获取验证码' }}
+      </button>
+    </view>
+
+    <!-- 登录按钮 -->
+    <button
+      class="login-btn"
+      bindtap="onLoginTap"
+      disabled="{{!phone || !smsCode || !isAgree || loggingIn}}"
+      loading="{{loggingIn}}"
+    >
+      登录
+    </button>
+
+    <!-- 协议勾选 -->
+    <view class="protocol-row" bindtap="onToggleAgree">
+      <view class="protocol-checkbox">
+        <view class="checkbox-inner {{isAgree ? 'checked' : ''}}"></view>
+      </view>
+      <text class="protocol-text">
+        我已阅读并同意
+        《用户协议》
+        《隐私政策》
+        《儿童/青少年个人信息保护规则》
+      </text>
+    </view>
+  </view>
+</view>
+

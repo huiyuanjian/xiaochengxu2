@@ -23,11 +23,18 @@
     "miniprogram": {
       "list": [
         {
-          "name": "pages/custom-card/index",
-          "pathName": "pages/custom-card/index",
+          "name": "pages/login/index",
+          "pathName": "pages/login/index",
           "query": "",
           "scene": null,
           "launchMode": "default"
+        },
+        {
+          "name": "pages/custom-card/index",
+          "pathName": "pages/custom-card/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         },
         {
           "name": "pages/index/index",
