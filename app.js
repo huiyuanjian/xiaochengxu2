@@ -2,6 +2,9 @@
 
 const Bmob = require('./utils/Bmob-2.6.3.min.js')
 Bmob.initialize("4610406b612dee88", "huiyuanjian12345");
+
+// 全局用户信息服务
+const UserService = require('./utils/userService.js')
 App({
   onLaunch() {
     // 展示本地存储能力
@@ -34,6 +37,18 @@ App({
     })
   },
   globalData: {
-    userInfo: null
-  }
+    userInfo: null,
+    mobileVerified: false,
+    mobilePhoneNumber: ''
+  },
+  
+  // 获取用户服务实例
+  getUserService() {
+    return UserService
+  },
+  
+  // 检查用户是否登录
+  isUserLoggedIn() {
+    return UserService.isLogin()
+  },
 })

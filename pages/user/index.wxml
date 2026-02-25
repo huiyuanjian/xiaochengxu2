@@ -9,8 +9,11 @@
           <text class="user-id">{{userId}}</text>
           <text class="user-intro">{{intro}}</text>
         </view>
-        <view class="user-camera-btn">
-          <view class="user-camera-icon"></view>
+        <view class="user-action-btns">
+          <view class="user-camera-btn">
+            <view class="user-camera-icon"></view>
+          </view>
+          <button class="user-logout-btn" bindtap="onLogout">退出</button>
         </view>
       </view>
 
@@ -45,7 +48,15 @@
     </view>
 
     <!-- 瀑布流列表：一行两列 -->
-    <scroll-view class="user-scroll" scroll-y="true">
+    <scroll-view 
+      class="user-scroll" 
+      scroll-y="true"
+      enable-back-to-top="true"
+      refresher-enabled="true"
+      refresher-triggered="{{loading && currentPage === 1}}"
+      bindrefresherrefresh="onPullDownRefresh"
+      bindscrolltolower="onReachBottom"
+    >
       <view class="user-waterfall">
         <view class="user-waterfall-col">
           <block wx:for="{{wfLeft}}" wx:key="id">
@@ -78,8 +89,14 @@
         </view>
       </view>
 
-      <view class="user-empty-wrapper" wx:if="{{wfLeft.length === 0 && wfRight.length === 0}}">
+      <view class="user-empty-wrapper" wx:if="{{wfLeft.length === 0 && wfRight.length === 0 && !isLoading}}">
         <text class="user-empty-text">这里还没有内容</text>
+      </view>
+      
+      <!-- 加载更多提示 -->
+      <view class="user-load-more" wx:if="{{wfLeft.length > 0 || wfRight.length > 0}}">
+        <text class="user-load-more-text" wx:if="{{isLoading && currentPage > 1}}">加载中...</text>
+        <text class="user-load-more-text" wx:elif="{{!hasMoreData}}">没有更多了</text>
       </view>
     </scroll-view>
   </view>

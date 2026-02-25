@@ -1,127 +1,304 @@
+// 个人中心页面
+// 遵循微信小程序开发规范和Bmob后端云最佳实践
+const UserService = require('../../utils/userService.js')
+
 Page({
+  /**
+   * 页面数据
+   */
   data: {
-    // 头像、昵称等展示数据，先使用静态占位
+    // 用户基本信息
     avatarUrl: 'https://img.yzcdn.cn/vant/cat.jpeg',
-    nickname: '小红薯677762ED',
-    userId: '小红书号 3475738901',
+    nickname: '未登录',
+    userId: '',
     intro: '还没有简介',
+    
+    // 用户统计数据
     stats: [
       { label: '关注', value: 0 },
       { label: '粉丝', value: 0 },
       { label: '获赞与收藏', value: 0 },
     ],
+    
+    // 标签页配置
     tabs: [
       { key: 'notes', label: '笔记' },
       { key: 'collect', label: '收藏' },
       { key: 'like', label: '赞过' },
     ],
-    activeTab: 'collect',
-    // 笔记/收藏/赞过列表静态数据（先不接接口）
-    notesList: [
-      {
-        id: 101,
-        cover: 'https://img.yzcdn.cn/vant/cat.jpeg',
-        title: '今天的日常碎片记录一下，天气很好',
-        author: '爱吃沙西瓜',
-        likeText: '126',
-      },
-      {
-        id: 102,
-        cover: 'https://img.yzcdn.cn/vant/cat.jpeg',
-        title: '分享一个超简单的早餐做法，三分钟搞定',
-        author: '小红薯A1B2',
-        likeText: '986',
-      },
-      {
-        id: 103,
-        cover: 'https://img.yzcdn.cn/vant/cat.jpeg',
-        title: '城市散步路线推荐，人少景美',
-        author: '晚风',
-        likeText: '2580',
-      },
-      {
-        id: 104,
-        cover: 'https://img.yzcdn.cn/vant/cat.jpeg',
-        title: '新买的杯子太好用了，颜值也很高',
-        author: '小红薯77',
-        likeText: '66',
-      },
-    ],
-    collectList: [
-      {
-        id: 1,
-        cover: 'https://img.yzcdn.cn/vant/cat.jpeg',
-        title: '老婆自已腌的泡菜，不敢吃该怎么拒绝',
-        author: '爱吃沙西瓜',
-        likeText: '5386',
-      },
-      {
-        id: 2,
-        cover: 'https://img.yzcdn.cn/vant/cat.jpeg',
-        title: '租房改造小技巧，几十块让房间焕然一新',
-        author: '小红薯C3D4',
-        likeText: '1320',
-      },
-      {
-        id: 3,
-        cover: 'https://img.yzcdn.cn/vant/cat.jpeg',
-        title: '通勤穿搭分享，显高又不费力',
-        author: 'Kiki',
-        likeText: '889',
-      },
-      {
-        id: 4,
-        cover: 'https://img.yzcdn.cn/vant/cat.jpeg',
-        title: '我愿称它为性价比之王，真的太香了',
-        author: '小红薯E5F6',
-        likeText: '265',
-      },
-    ],
-    likeList: [
-      {
-        id: 201,
-        cover: 'https://img.yzcdn.cn/vant/cat.jpeg',
-        title: '周末不想出门就做这个，一锅端满足',
-        author: '小红薯G7H8',
-        likeText: '310',
-      },
-      {
-        id: 202,
-        cover: 'https://img.yzcdn.cn/vant/cat.jpeg',
-        title: '护肤新思路：精简护肤也能稳住状态',
-        author: '小夏',
-        likeText: '2199',
-      },
-      {
-        id: 203,
-        cover: 'https://img.yzcdn.cn/vant/cat.jpeg',
-        title: '拍照姿势合集，随手拍都出片',
-        author: '豆豆',
-        likeText: '5306',
-      },
-    ],
+    activeTab: 'notes',
+    
+    // 加载状态管理
+    isLoading: false,
+    hasMoreData: true,
+    currentPage: 1,
+    pageSize: 10,
+    
+    // 动态数据列表
+    notesList: [],
+    collectList: [],
+    likeList: [],
 
-    // 瀑布流数据（左右两列）
+    // 瀑布流布局数据
     waterfallMap: {
       notes: { left: [], right: [] },
       collect: { left: [], right: [] },
       like: { left: [], right: [] },
     },
     wfLeft: [],
-    wfRight: [],
+    wfRight: []
   },
 
+  /**
+   * 生命周期函数--监听页面加载
+   */
   onLoad() {
-    this._rebuildAllWaterfalls()
-    this._applyActiveWaterfall(this.data.activeTab)
+    this._checkLoginStatus()
   },
 
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow() {
+    // 每次显示页面时刷新数据
+    this._refreshUserData()
+  },
+
+  /**
+   * 检查用户登录状态
+   * @private
+   */
+  _checkLoginStatus() {
+    if (!UserService.isLogin()) {
+      wx.showModal({
+        title: '提示',
+        content: '您还未登录，请先登录',
+        showCancel: false,
+        confirmText: '去登录',
+        success: (res) => {
+          if (res.confirm) {
+            wx.redirectTo({
+              url: '/pages/login/index'
+            })
+          }
+        }
+      })
+      return
+    }
+    
+    this._loadUserData()
+  },
+
+  /**
+   * 刷新用户数据
+   * @private
+   */
+  _refreshUserData() {
+    if (UserService.isLogin()) {
+      this._loadUserData()
+    }
+  },
+
+  /**
+   * 加载用户完整数据
+   * @private
+   */
+  async _loadUserData() {
+    wx.showLoading({ title: '加载中...' })
+    
+    try {
+      const currentUser = UserService.getCurrentUser()
+      if (!currentUser) {
+        throw new Error('获取用户信息失败')
+      }
+      
+      // 并行加载用户基本信息和统计数据
+      const [userInfo, userStats] = await Promise.all([
+        UserService.getUserInfo(currentUser.objectId),
+        UserService.getUserStats(currentUser.objectId)
+      ])
+      
+      // 更新用户基本信息
+      this.setData({
+        avatarUrl: userInfo.avatar || 'https://img.yzcdn.cn/vant/cat.jpeg',
+        nickname: userInfo.nickname || userInfo.username || '用户' + currentUser.objectId.slice(-6),
+        userId: '小红书号 ' + (currentUser.objectId || '').slice(-10),
+        intro: userInfo.signature || '还没有简介'
+      })
+      
+      // 更新统计数据
+      this._updateUserStats(userStats)
+      
+      // 加载当前标签页内容
+      await this._loadDataByTab(this.data.activeTab)
+      
+    } catch (error) {
+      console.error('[UserPage] 加载用户数据失败:', error)
+      wx.showToast({
+        title: '数据加载失败',
+        icon: 'none'
+      })
+    } finally {
+      wx.hideLoading()
+    }
+  },
+
+  /**
+   * 更新用户统计数据展示
+   * @param {Object} stats - 统计数据
+   * @private
+   */
+  _updateUserStats(stats) {
+    this.setData({
+      stats: [
+        { label: '关注', value: stats.followCount || 0 },
+        { label: '粉丝', value: stats.fanCount || 0 },
+        { label: '获赞与收藏', value: stats.likeCount || 0 },
+      ]
+    })
+  },
+
+  /**
+   * 根据标签页加载对应数据
+   * @param {string} tabKey - 标签页key
+   * @private
+   */
+  async _loadDataByTab(tabKey) {
+    if (this.data.isLoading) return
+    
+    this.setData({ isLoading: true })
+    
+    try {
+      const currentUser = UserService.getCurrentUser()
+      if (!currentUser) return
+      
+      let list = []
+      const page = this.data.currentPage
+      const limit = this.data.pageSize
+      
+      // 根据标签页类型调用对应服务
+      switch (tabKey) {
+        case 'notes':
+          list = await UserService.getUserNotes(currentUser.objectId, page, limit)
+          break
+        case 'collect':
+          list = await UserService.getUserCollects(currentUser.objectId, page, limit)
+          break
+        case 'like':
+          list = await UserService.getUserLikes(currentUser.objectId, page, limit)
+          break
+        default:
+          console.warn('[UserPage] 未知的标签页类型:', tabKey)
+          return
+      }
+      
+      // 更新列表数据
+      this._updateListData(tabKey, list, page)
+      
+      // 重建瀑布流布局
+      this._rebuildAllWaterfalls()
+      this._applyActiveWaterfall(tabKey)
+      
+    } catch (error) {
+      console.error('[UserPage] 加载标签页数据失败:', error)
+      wx.showToast({
+        title: '加载失败',
+        icon: 'none'
+      })
+    } finally {
+      this.setData({ isLoading: false })
+    }
+  },
+
+  /**
+   * 标签页切换处理
+   * @param {Object} e - 事件对象
+   */
   onTabChange(e) {
     const { key } = e.currentTarget.dataset
     if (!key || key === this.data.activeTab) return
 
-    this.setData({ activeTab: key })
-    this._applyActiveWaterfall(key)
+    this.setData({ 
+      activeTab: key,
+      currentPage: 1  // 切换标签时重置页码
+    })
+    
+    // 加载新标签页数据
+    this._loadDataByTab(key)
+  },
+
+  /**
+   * 下拉刷新处理
+   */
+  onPullDownRefresh() {
+    this.setData({
+      currentPage: 1
+    })
+    this._loadUserData().finally(() => {
+      wx.stopPullDownRefresh()
+    })
+  },
+
+  /**
+   * 上拉触底加载更多
+   */
+  onReachBottom() {
+    if (!this.data.hasMoreData || this.data.isLoading) return
+    
+    this.setData({
+      currentPage: this.data.currentPage + 1
+    })
+    
+    this._loadDataByTab(this.data.activeTab)
+  },
+
+  /**
+   * 退出登录处理
+   */
+  onLogout() {
+    wx.showModal({
+      title: '提示',
+      content: '确定要退出登录吗？',
+      success: (res) => {
+        if (res.confirm) {
+          UserService.logout()
+          wx.redirectTo({
+            url: '/pages/login/index'
+          })
+        }
+      }
+    })
+  },
+
+  /**
+   * 更新列表数据
+   * @param {string} tabKey - 标签页key
+   * @param {Array} newList - 新数据列表
+   * @param {number} page - 当前页码
+   * @private
+   */
+  _updateListData(tabKey, newList, page) {
+    const listKey = tabKey + 'List'
+    const currentList = this.data[listKey] || []
+    
+    let updatedList
+    if (page === 1) {
+      // 刷新模式：替换数据
+      updatedList = newList
+      this.setData({
+        hasMoreData: newList.length >= this.data.pageSize
+      })
+    } else {
+      // 加载更多模式：追加数据
+      updatedList = [...currentList, ...newList]
+      this.setData({
+        hasMoreData: newList.length >= this.data.pageSize
+      })
+    }
+    
+    this.setData({
+      [listKey]: updatedList
+    })
   },
 
   _applyActiveWaterfall(tabKey) {
