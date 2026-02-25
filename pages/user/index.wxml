@@ -44,29 +44,41 @@
       </block>
     </view>
 
-    <!-- 收藏列表 -->
+    <!-- 瀑布流列表：一行两列 -->
     <scroll-view class="user-scroll" scroll-y="true">
-      <view class="user-card-list" wx:if="{{activeTab === 'collect'}}">
-        <block wx:for="{{collectList}}" wx:key="id">
-          <view class="user-card">
-            <image class="user-card-cover" src="{{item.cover}}" mode="aspectFill" />
-            <view class="user-card-content">
-              <text class="user-card-title">{{item.title}}</text>
-              <view class="user-card-meta">
-                <text class="user-card-author">{{item.author}}</text>
-                <text class="user-card-tag">{{item.tag}}</text>
-                <text class="user-card-like">❤ {{item.likeText}}</text>
+      <view class="user-waterfall">
+        <view class="user-waterfall-col">
+          <block wx:for="{{wfLeft}}" wx:key="id">
+            <view class="user-wf-card">
+              <image class="user-wf-cover" src="{{item.cover}}" mode="widthFix" />
+              <view class="user-wf-content">
+                <text class="user-wf-title">{{item.title}}</text>
+                <view class="user-wf-meta">
+                  <text class="user-wf-author">{{item.author}}</text>
+                  <text class="user-wf-like">❤ {{item.likeText}}</text>
+                </view>
               </view>
             </view>
-          </view>
-        </block>
+          </block>
+        </view>
+
+        <view class="user-waterfall-col">
+          <block wx:for="{{wfRight}}" wx:key="id">
+            <view class="user-wf-card">
+              <image class="user-wf-cover" src="{{item.cover}}" mode="widthFix" />
+              <view class="user-wf-content">
+                <text class="user-wf-title">{{item.title}}</text>
+                <view class="user-wf-meta">
+                  <text class="user-wf-author">{{item.author}}</text>
+                  <text class="user-wf-like">❤ {{item.likeText}}</text>
+                </view>
+              </view>
+            </view>
+          </block>
+        </view>
       </view>
 
-      <!-- 其他标签先展示空态 -->
-      <view
-        class="user-empty-wrapper"
-        wx:if="{{activeTab !== 'collect'}}"
-      >
+      <view class="user-empty-wrapper" wx:if="{{wfLeft.length === 0 && wfRight.length === 0}}">
         <text class="user-empty-text">这里还没有内容</text>
       </view>
     </scroll-view>
