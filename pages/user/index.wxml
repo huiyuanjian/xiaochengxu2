@@ -1,0 +1,75 @@
+<view class="user-page">
+  <!-- 头部区域 -->
+  <view class="user-header">
+    <view class="user-header-main">
+      <view class="user-info-row">
+        <image class="user-avatar" src="{{avatarUrl}}" mode="aspectFill" />
+        <view class="user-name-block">
+          <text class="user-nickname">{{nickname}}</text>
+          <text class="user-id">{{userId}}</text>
+          <text class="user-intro">{{intro}}</text>
+        </view>
+        <view class="user-camera-btn">
+          <view class="user-camera-icon"></view>
+        </view>
+      </view>
+
+      <view class="user-stats-row">
+        <block wx:for="{{stats}}" wx:key="label">
+          <view class="user-stat-item">
+            <text class="user-stat-value">{{item.value}}</text>
+            <text class="user-stat-label">{{item.label}}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+  </view>
+
+  <!-- 内容区域 -->
+  <view class="user-body">
+    <!-- 顶部标签栏 -->
+    <view class="user-tab-bar">
+      <block wx:for="{{tabs}}" wx:key="key">
+        <view
+          class="user-tab-item {{activeTab === item.key ? 'user-tab-item-active' : ''}}"
+          data-key="{{item.key}}"
+          bindtap="onTabChange"
+        >
+          <text class="user-tab-text">{{item.label}}</text>
+          <view
+            wx:if="{{activeTab === item.key}}"
+            class="user-tab-underline"
+          ></view>
+        </view>
+      </block>
+    </view>
+
+    <!-- 收藏列表 -->
+    <scroll-view class="user-scroll" scroll-y="true">
+      <view class="user-card-list" wx:if="{{activeTab === 'collect'}}">
+        <block wx:for="{{collectList}}" wx:key="id">
+          <view class="user-card">
+            <image class="user-card-cover" src="{{item.cover}}" mode="aspectFill" />
+            <view class="user-card-content">
+              <text class="user-card-title">{{item.title}}</text>
+              <view class="user-card-meta">
+                <text class="user-card-author">{{item.author}}</text>
+                <text class="user-card-tag">{{item.tag}}</text>
+                <text class="user-card-like">❤ {{item.likeText}}</text>
+              </view>
+            </view>
+          </view>
+        </block>
+      </view>
+
+      <!-- 其他标签先展示空态 -->
+      <view
+        class="user-empty-wrapper"
+        wx:if="{{activeTab !== 'collect'}}"
+      >
+        <text class="user-empty-text">这里还没有内容</text>
+      </view>
+    </scroll-view>
+  </view>
+</view>
+
