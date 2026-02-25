@@ -133,10 +133,20 @@ Page({
       .then((user) => {
         console.log('一键登录成功', user)
 
+        // 再根据 objectId 拉取最新用户数据（包含自定义字段），并刷新本地缓存
+        return Bmob.User.updateStorage(user.objectId)
+      })
+      .then((fullUser) => {
+        console.log('更新后的完整用户信息', fullUser)
+
+        // 再从本地缓存读取一次，确认当前用户信息
+        const current = Bmob.User.current()
+        console.log('Bmob.User.current() 用户信息', current)
+
         const app = getApp()
         if (app && app.globalData) {
           // 记录用户对象和手机号，方便项目其他页面使用
-          app.globalData.userInfo = user
+          app.globalData.userInfo = fullUser
           app.globalData.mobileVerified = true
           app.globalData.mobilePhoneNumber = this.data.phone
         }
